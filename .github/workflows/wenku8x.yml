@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'select branch to build(default: master)'
+        description: 'select branch to build(default: main)'
         required: false
         default: 'master'
       flavor:
@@ -15,7 +15,7 @@ on:
 #     - cron: "30 0 */2 * *"
 
 jobs:
-  strato_android_build:
+  wenku8x_android_build:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
       name: Get version
       run: |
         echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
-        cd ${{ github.workspace }}/strato
+        cd ${{ github.workspace }}/wenku8x
         echo "hash=$(git log -1 --pretty=format:%H)" >> $GITHUB_OUTPUT
         echo "short_hash=$(git describe --always --long)" >> $GITHUB_OUTPUT
         echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
@@ -60,10 +60,10 @@ jobs:
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
-        cd ${{ github.workspace }}/strato
+        cd ${{ github.workspace }}/wenku8x
         chmod +x ./gradlew
         ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
-        mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/strato-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
+        mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
     - name: Release wenku8x
@@ -71,4 +71,4 @@ jobs:
       with:
         name: ${{ steps.version.outputs.date }}
         tag_name: ${{ steps.version.outputs.date }}
-        files: ${{ github.workspace }}/strato-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
+        files: ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
