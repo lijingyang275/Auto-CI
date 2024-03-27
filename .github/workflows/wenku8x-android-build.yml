@@ -59,14 +59,10 @@ jobs:
         export NDK_CCACHE="$(which ccache)"
         ccache -s
         cd ${{ github.workspace }}/wenku8x/android/
-    
-    - uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: current  
-        arguments: assembleRelease
-   
-    - name: Build Android2
-      run: |   
+        gradle wrapper
+        ./gradlew build
+        chmod +x ./gradlew
+        ./gradlew "assembleMainlineRelease"
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
