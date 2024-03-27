@@ -6,7 +6,7 @@ on:
       branch:
         description: 'select branch to build(default: main)'
         required: false
-        default: 'master'
+        default: 'main'
       flavor:
         description: 'select flavor to build(default: mainline)'
         required: false
@@ -62,7 +62,7 @@ jobs:
         ccache -s
         cd ${{ github.workspace }}/wenku8x
         chmod +x ./gradlew
-        ./gradlew build
+        ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
