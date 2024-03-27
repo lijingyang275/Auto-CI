@@ -24,6 +24,9 @@ jobs:
       with:
         distribution: temurin
         java-version: 17
+    - uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: current
 
     - name: Download wenku8x source code
       run: |
@@ -59,10 +62,7 @@ jobs:
         export NDK_CCACHE="$(which ccache)"
         ccache -s
         cd ${{ github.workspace }}/wenku8x/android/
-        - uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: current
-          arguments: assembleRelease
+        arguments: assembleRelease
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
