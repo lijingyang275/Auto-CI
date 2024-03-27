@@ -1,4 +1,4 @@
-name: wenku8x
+name: wenku8x-android-build
 
 on:
   workflow_dispatch:
@@ -8,11 +8,11 @@ on:
         required: false
         default: 'main'
       flavor:
-        description: 'select flavor to build(default: mainline)'
+        description: 'select flavor to build(default: ea)'
         required: false
-        default: 'mainline'
-#   schedule:
-#     - cron: "30 0 */2 * *"
+        default: 'ea'
+  schedule:
+    - cron: "30 0 */2 * *"
 
 jobs:
   wenku8x_android_build:
@@ -28,7 +28,7 @@ jobs:
     - name: Download wenku8x source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/zsakvo/wenku8x --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/wenku8x-emu/wenku8x.git --recursive
 
     - id: version
       name: Get version
@@ -53,16 +53,14 @@ jobs:
     - name: Prepare environment
       run: |
         sudo apt-get install ccache glslang-dev glslang-tools
-        sudo apt-get install -y ninja-build
-        ln -s /usr/bin/ninja .
 
     - name: Build Android
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
-        cd ${{ github.workspace }}/wenku8x
+        cd ${{ github.workspace }}/wenku8x/src/android
         chmod +x ./gradlew
-        ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
+        ./gradlew "assembleMainlineRelease"
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
