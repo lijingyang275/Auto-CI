@@ -59,7 +59,7 @@ jobs:
         export NDK_CCACHE="$(which ccache)"
         ccache -s
         cd ${{ github.workspace }}/wenku8x/android
-        if [ ! -f "gradlew" ]; then gradlew wrapper; fi
+        if [ ! -f "gradlew" ]; then gradle wrapper; fi
         chmod +x ./gradlew
         ./gradlew "assembleMainlineRelease"
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
