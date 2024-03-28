@@ -23,12 +23,12 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 17
+        java-version: 22
 
     - name: Download wenku8x source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/lijingyang275/wenku8x --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/zsakvo/wenku8x --recursive
 
     - id: version
       name: Get version
@@ -58,7 +58,7 @@ jobs:
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
-        cd ${{ github.workspace }}/wenku8x/android/
+        cd ${{ github.workspace }}/wenku8x/android/app
         if [ ! -f "gradlew" ]; then gradle wrapper; fi
         chmod +x ./gradlew
         ./gradlew "assembleMainlineRelease"
