@@ -24,7 +24,11 @@ jobs:
       with:
         distribution: temurin
         java-version: 17
-
+    - name: Install and set Flutter version
+      uses: subosito/flutter-action@v2
+      with:
+          flutter-version: "2.10.0"
+          
     - name: Download wenku8x source code
       run: |
         cd ${{ github.workspace }}
@@ -53,15 +57,13 @@ jobs:
     - name: Prepare environment
       run: |
         sudo apt-get install ccache glslang-dev glslang-tools
-
+    
     - name: Build Android
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
         cd ${{ github.workspace }}/wenku8x/android
-        if [ ! -f "gradlew" ]; then gradle wrapper; fi
-        chmod +x ./gradlew
-        ./gradlew "assembleMainlineRelease"
+        flutter build apk --release
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/wenku8x-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
