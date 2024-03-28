@@ -58,7 +58,7 @@ jobs:
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
-        cd ${{ github.workspace }}/wenku8x/android/app
+        cd ${{ github.workspace }}/wenku8x/android
         if [ ! -f "gradlew" ]; then gradle wrapper; fi
         chmod +x ./gradlew
         ./gradlew "assembleMainlineRelease"
