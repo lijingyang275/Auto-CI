@@ -28,7 +28,7 @@ jobs:
     - name: Download wenku8x source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/zsakvo/wenku8x --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'main' }} https://github.com/lijingyang275/wenku8x --recursive
 
     - id: version
       name: Get version
