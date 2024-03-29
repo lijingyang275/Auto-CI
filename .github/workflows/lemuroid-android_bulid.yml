@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'select branch to build(default: main)'
+        description: 'select branch to build(default: master)'
         required: false
-        default: 'main'
+        default: 'master'
       flavor:
         description: 'select flavor to build(default: ea)'
         required: false
