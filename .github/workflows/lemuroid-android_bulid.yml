@@ -22,8 +22,8 @@ jobs:
     steps:
     - uses: actions/setup-java@v4
       with:
-        distribution: temurin
-        java-version: 17
+        distribution: adopt
+        java-version: 11
 
     - name: Download Lemuroid source code
       run: |
