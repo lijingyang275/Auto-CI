@@ -60,7 +60,7 @@ jobs:
         ccache -s
         cd ${{ github.workspace }}/Lemuroid
         chmod +x ./gradlew
-        ./gradlew "assembleMainlineRelease"
+        ./gradlew assembleDebug checkstyle lintDebug lintKotlin check
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/Lemuroid-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
