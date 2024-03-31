@@ -28,7 +28,7 @@ jobs:
     - name: Download Vita3K source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'master' }} https://github.com/Vita3K/Vita3K-Android.git --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'android' }} https://github.com/Vita3K/Vita3K-Android.git --recursive
 
     - id: version
       name: Get version
