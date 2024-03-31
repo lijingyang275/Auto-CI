@@ -62,7 +62,7 @@ jobs:
         ccache -s
         cd ${{ github.workspace }}/Vita3K-Android
         chmod +x ./gradlew
-        ./gradlew "assembleMainlineRelease"
+        ./gradlew assembleRelease
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/Vita3K-android-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
