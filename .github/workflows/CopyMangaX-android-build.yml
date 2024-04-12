@@ -56,7 +56,7 @@ jobs:
         ccache -s
         cd ${{ github.workspace }}/CopyMangaX
         chmod +x ./gradlew
-        ./gradlew wrapper --gradle-version=7.6.4
+        ./gradlew wrapper --gradle-version=8.3.0
         ./gradlew "assembleMainlineRelease"
         mv app/build/outputs/apk/mainline/release/app-mainline-release.apk ${{ github.workspace }}/CopyMangaX-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
