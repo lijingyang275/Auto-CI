@@ -28,7 +28,7 @@ jobs:
     - name: Download copymangax source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'master' }}  https://github.com/crowforkotlin/CopyMangaX.git --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'dev' }}  https://github.com/crowforkotlin/CopyMangaX.git --recursive
 
     - id: version
       name: Get version
