@@ -7,12 +7,8 @@ on:
         description: 'select branch to build(default: dev)'
         required: false
         default: 'dev'
-      flavor:
-        description: 'select flavor to build(default: mainline)'
-        required: false
-        default: 'mainline'
-#   schedule:
-#     - cron: "30 0 */2 * *"
+  schedule:
+    - cron: "30 0 * * *"
 
 jobs:
   CopyMangaX_android_build:
@@ -28,7 +24,7 @@ jobs:
     - name: Download CopyMangaX source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'dev' }}  https://github.com/crowforkotlin/CopyMangaX.git --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'dev' }} https://github.com/crowforkotlin/CopyMangaX.git --recursive
 
     - id: version
       name: Get version
@@ -53,14 +49,12 @@ jobs:
     - name: Prepare environment
       run: |
         sudo apt-get install ccache glslang-dev glslang-tools
-        sudo apt-get install -y ninja-build
-        ln -s /usr/bin/ninja .
 
     - name: Build Android
       run: |
         export NDK_CCACHE="$(which ccache)"
         ccache -s
-        cd ${{ github.workspace }}/CopyMangaX
+        cd ${{ github.workspace }}/CopyMangaX/src/android
         chmod +x ./gradlew
         ./gradlew "assembleMainlineRelease"
         mv app/build/outputs/apk/mainline/release/app-mainline-release.apk ${{ github.workspace }}/CopyMangaX-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
@@ -71,4 +65,4 @@ jobs:
       with:
         name: ${{ steps.version.outputs.date }}
         tag_name: ${{ steps.version.outputs.date }}
-        files: ${{ github.workspace }}/CopyMangaX-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
+        files: ${{ github.workspace }}/CopyMangaX-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
