@@ -62,8 +62,8 @@ jobs:
         ccache -s
         cd ${{ github.workspace }}/CopyMangaX
         chmod +x ./gradlew
-        ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
-        mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/CopyMangaX-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
+        ./gradlew "assembleMainlineRelease"
+        mv app/build/outputs/apk/mainline/release/app-mainline-release.apk ${{ github.workspace }}/CopyMangaX-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
 
     - name: Release CopyMangaX
