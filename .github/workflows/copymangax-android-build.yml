@@ -1,0 +1,77 @@
+name: copymangax-android-build
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'select branch to build(default: dev)'
+        required: false
+        default: 'dev'
+      flavor:
+        description: 'select flavor to build(default: mainline)'
+        required: false
+        default: 'mainline'
+#   schedule:
+#     - cron: "30 0 */2 * *"
+
+jobs:
+  copymangax_android_build:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
+
+    - name: Download copymangax source code
+      run: |
+        cd ${{ github.workspace }}
+        git clone --branch ${{ github.event.inputs.branch || 'master' }}  https://github.com/crowforkotlin/CopyMangaX.git --recursive
+
+    - id: version
+      name: Get version
+      run: |
+        echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        cd ${{ github.workspace }}/copymangax
+        echo "hash=$(git log -1 --pretty=format:%H)" >> $GITHUB_OUTPUT
+        echo "short_hash=$(git describe --always --long)" >> $GITHUB_OUTPUT
+        echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
+    - name: Set up cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ~/.ccache
+        key: ${{ runner.os }}-android-${{ steps.version.outputs.hash }}
+        restore-keys: |
+            ${{ runner.os }}-android-
+
+    - name: Prepare environment
+      run: |
+        sudo apt-get install ccache glslang-dev glslang-tools
+        sudo apt-get install -y ninja-build
+        ln -s /usr/bin/ninja .
+
+    - name: Build Android
+      run: |
+        export NDK_CCACHE="$(which ccache)"
+        ccache -s
+        cd ${{ github.workspace }}/copymangax
+        rmdir lib_mangax/src/main/jni/OpenCC
+        git init
+        git submodule add -f --name OpenCC -b master https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC
+        chmod +x ./gradlew
+        ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
+        mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/copymangax-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
+        ccache -s
+
+    - name: Release copymangax
+      uses: softprops/action-gh-release@v2
+      with:
+        name: ${{ steps.version.outputs.date }}
+        tag_name: ${{ steps.version.outputs.date }}
+        files: ${{ github.workspace }}/copymangax-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
