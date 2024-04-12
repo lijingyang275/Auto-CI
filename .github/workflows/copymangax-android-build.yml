@@ -61,10 +61,10 @@ jobs:
         export NDK_CCACHE="$(which ccache)"
         ccache -s
         cd ${{ github.workspace }}/CopyMangaX
+        chmod +x ./gradlew
         rmdir lib_mangax/src/main/jni/OpenCC
         git init
         git submodule add -f --name OpenCC -b dev https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC
-        chmod +x ./gradlew
         ./gradlew --no-daemon --stacktrace --build-cache --parallel --configure-on-demand assembleMainlineRelease
         mv $(find app/build/outputs/apk -type f | grep -E "\.apk$") ${{ github.workspace }}/CopyMangaX-${{ github.event.inputs.flavor || 'ea' }}-${{ steps.version.outputs.date }}-${{ steps.version.outputs.version }}.apk
         ccache -s
