@@ -28,7 +28,7 @@ jobs:
     - name: Download strato source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'jit' }} https://github.com/lijingyang275/strato --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'jit' }} https://github.com/strato-emu/strato.git --recursive
 
     - id: version
       name: Get version
