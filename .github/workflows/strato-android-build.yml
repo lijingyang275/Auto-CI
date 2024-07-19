@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'select branch to build(default: master)'
+        description: 'select branch to build(default: jit)'
         required: false
-        default: 'master'
+        default: 'jit'
       flavor:
         description: 'select flavor to build(default: mainline)'
         required: false
@@ -28,7 +28,7 @@ jobs:
     - name: Download strato source code
       run: |
         cd ${{ github.workspace }}
-        git clone --branch ${{ github.event.inputs.branch || 'master' }} https://github.com/lijingyang275/strato --recursive
+        git clone --branch ${{ github.event.inputs.branch || 'jit' }} https://github.com/lijingyang275/strato --recursive
 
     - id: version
       name: Get version
